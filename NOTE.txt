@@ -1,0 +1,6 @@
+yarn add @nestjs/config
+--------authentication part--------
+
+nest g module auth
+nest g service auth
+nest g controller auth
