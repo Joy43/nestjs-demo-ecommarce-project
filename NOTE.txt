@@ -4,3 +4,7 @@ yarn add @nestjs/config
 nest g module auth
 nest g service auth
 nest g controller auth
+nest g resource users 
+--------jwt----------
+yarn add @nestjs/jwt @nestjs/passport passport passport-jwt jsonwebtoken
+yarn add -D @types/passport-jwt
