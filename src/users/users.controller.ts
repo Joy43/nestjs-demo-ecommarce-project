@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   UploadedFile,
   UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
@@ -23,9 +24,14 @@ export class UsersController {
   @UseInterceptors(FileInterceptor('image'))
   create(
     @UploadedFile() file: Express.Multer.File,
-    @Body('data') data: string 
+    @Body('data') data: string
   ) {
-    const createUserDto: CreateUserDto = JSON.parse(data);
+    let createUserDto: CreateUserDto;
+    try {
+      createUserDto = JSON.parse(data);
+    } catch {
+      throw new BadRequestException('Invalid JSON in data field');
+    }
     return this.usersService.create(createUserDto, file);
   }
 
@@ -46,7 +52,12 @@ export class UsersController {
     @UploadedFile() file: Express.Multer.File,
     @Body('data') data: string
   ) {
-    const updateUserDto: UpdateUserDto = JSON.parse(data);
+    let updateUserDto: UpdateUserDto;
+    try {
+      updateUserDto = JSON.parse(data);
+    } catch {
+      throw new BadRequestException('Invalid JSON in data field');
+    }
     return this.usersService.update(id, updateUserDto, file);
   }
 
