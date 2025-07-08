@@ -16,12 +16,17 @@ model User {
   image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userUuid  String   @default(uuid())
+  seller    Seller?
 
-  seller Seller?
+  Product         Product[]
+  ProductCategory ProductCategory[]
+  ProductBand     ProductBand[]
+  News            News[]
 }
 
 model Seller {
-  id          Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   companyName String
   website     String
   phone       String
@@ -30,11 +35,71 @@ model Seller {
   state       String
   city        String
   zip         String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int      @unique
+  user        User     @relation(fields: [userId], references: [id])
 
-  userId Int  @unique
-  user   User @relation(fields: [userId], references: [id])
+  Product Product[]
+
+  News News[]
 }
 
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  image       String
+  stock       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  sellerId    Int
+  seller      Seller   @relation(fields: [sellerId], references: [id])
+
+  ProductCategory ProductCategory[]
+
+  ProductBand ProductBand[]
+}
+
+model News {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  sellerId    Int
+  seller      Seller   @relation(fields: [sellerId], references: [id])
+}
+
+model ProductCategory {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+
+  User User[]
+}
+
+model ProductBand {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+
+  User User[]
+}
+
+// Enum for user roles
 enum Role {
   SELLER
   ADMIN
